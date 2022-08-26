@@ -22,16 +22,16 @@ jobs:
           enable-AzPSSession: true
       
 
-      # - name: Run Azure PowerShell script
-      #   uses: azure/powershell@v1
-      #   with:
-      #     azPSVersion: "latest"      
+      - name: Run Azure PowerShell script
+        uses: azure/powershell@v1
+        with:
+          azPSVersion: "latest"      
           
-      #     inlineScript: |
-      #       #   Write-Host $env:GITHUB_WORKSPACE
+          inlineScript: |
+            #   Write-Host $env:GITHUB_WORKSPACE
 
-      #       Invoke-Expression -Command $env:GITHUB_WORKSPACE/pipelines/common/scripts/tests/PesterRunner.ps1
+            Invoke-Expression -Command $env:GITHUB_WORKSPACE/pipelines/common/scripts/tests/PesterRunner.ps1
             
-      - name: Pester
-        run: $env:GITHUB_WORKSPACE/pipelines/common/scripts/tests/PesterRunner.ps1
-        shell: pwsh
+      # - name: Pester
+      #   run: $env:GITHUB_WORKSPACE/pipelines/common/scripts/tests/PesterRunner.ps1
+      #   shell: pwsh
