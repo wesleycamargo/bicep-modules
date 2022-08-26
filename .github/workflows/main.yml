@@ -29,10 +29,10 @@ jobs:
         uses: Azure/login@v1.4.5
         with:          
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-
+      
       - name: Run Azure PowerShell script
         uses: azure/powershell@v1
         with:
+          azPSVersion: "latest"      
           inlineScript: |
             Get-ChildItem ./ -Recurse
-          
