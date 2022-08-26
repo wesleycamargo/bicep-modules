@@ -3,13 +3,13 @@ Describe "Resource Group" -Tag resourceGroup {
         It "Should be created successfully" {
             
             # az deployment sub create 
-            # --template-file .\src\modules\Microsoft.Resources\resourceGroups\main.bicep 
+            # --template-file ./src/modules/Microsoft.Resources/resourceGroups/main.bicep 
             # -l westeurope 
-            # --parameters .\src\modules\Microsoft.Resources\resourceGroups\examples\resourceGroup.parameters.json
+            # --parameters ./src/modules/Microsoft.Resources/resourceGroups/examples/resourceGroup.parameters.json
 
             New-AzSubscriptionDeployment -Location westeurope `
-                -TemplateFile .\src\modules\Microsoft.Resources\resourceGroups\main.bicep `
-                -TemplateParameterFile .\src\modules\Microsoft.Resources\resourceGroups\examples\resourceGroup.parameters.json
+                -TemplateFile ./src/modules/Microsoft.Resources/resourceGroups/main.bicep `
+                -TemplateParameterFile ./src/modules/Microsoft.Resources/resourceGroups/examples/resourceGroup.parameters.json
 
             # $resourceGroup = (az group list --query "[?name == 'rg-test']" -o json) | ConvertFrom-Json
 
@@ -24,7 +24,7 @@ Describe "Resource Group" -Tag resourceGroup {
 AfterAll {
     Write-Host "Removing resources..."
 
-    Import-Module .\pipelines\common\scripts\helpers\AzureHelpers.psm1
+    Import-Module ./pipelines/common/scripts/helpers/AzureHelpers.psm1
 
     Remove-ResourceGroupByName -name "rg-test"
 }
