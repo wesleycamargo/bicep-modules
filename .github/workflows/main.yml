@@ -27,5 +27,5 @@ jobs:
           inlineScript: |
             Write-Host $GITHUB_WORKSPACE
             
-            Get-ChildItem $GITHUB_WORKSPACE/pipelines/common/scripts/tests -Recurse
+            Get-ChildItem $env:GITHUB_WORKSPACE/pipelines/common/scripts/tests -Recurse
             
