@@ -19,13 +19,16 @@ jobs:
         uses: Azure/login@v1.4.5
         with:          
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+          enable-AzPSSession: true
       
+
       - name: Run Azure PowerShell script
         uses: azure/powershell@v1
         with:
           azPSVersion: "latest"      
+          
           inlineScript: |
-            Write-Host $env:GITHUB_WORKSPACE
+            #   Write-Host $env:GITHUB_WORKSPACE
 
-            $env:GITHUB_WORKSPACE/pipelines/common/scripts/tests/PesterRunner.ps1
+            Invoke-Expression -Command $env:GITHUB_WORKSPACE/pipelines/common/scripts/tests/PesterRunner.ps1
             
