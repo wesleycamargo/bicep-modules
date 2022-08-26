@@ -47,4 +47,6 @@ jobs:
         with:
           # Specify the script here
           inlineScript: 
-            az account show
+            Get-ChildItem $GITHUB_WORKSPACE -Recurse
+      
+      
