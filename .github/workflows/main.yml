@@ -34,3 +34,10 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
+          
+      - name: Azure CLI Action
+        uses: Azure/cli@v1
+        with:
+          # Specify the script here
+          inlineScript: 
+            az account show
