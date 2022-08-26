@@ -34,7 +34,15 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
-          
+
+
+
+      - name: Azure Login
+        uses: Azure/login@v1.4.5
+        with:
+          # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
+          creds: AZURE_CREDENTIALS                    
+
       - name: Azure CLI Action
         uses: Azure/cli@v1
         with:
