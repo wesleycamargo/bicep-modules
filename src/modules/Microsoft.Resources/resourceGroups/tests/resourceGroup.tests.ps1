@@ -19,8 +19,7 @@ Describe "Resource Group" -Tag resourceGroup {
 
             $resourceGroup = Get-AzResourceGroup -Name "rg-test"
             
-            
-            $resourceGroup.name | Should -Be "rg-test"
+            $resourceGroup.ResourceGroupName | Should -Be "rg-test"
         }
     }
 }
