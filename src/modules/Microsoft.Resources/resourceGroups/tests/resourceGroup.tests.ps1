@@ -1,3 +1,7 @@
+BeforeAll {
+    Install-Module -Name Az.Resources -AllowClobber -Scope CurrentUser
+}
+
 Describe "Resource Group" -Tag resourceGroup {
     Context "Validate Resource Group" {
         It "Should be created successfully" {
