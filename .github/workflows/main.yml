@@ -47,6 +47,6 @@ jobs:
         with:
           # Specify the script here
           inlineScript: 
-            Get-ChildItem $GITHUB_WORKSPACE -Recurse
+            Get-ChildItem ./ -Recurse
       
       
