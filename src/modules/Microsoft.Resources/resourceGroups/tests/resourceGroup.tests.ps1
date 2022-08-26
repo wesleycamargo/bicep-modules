@@ -1,5 +1,5 @@
 BeforeAll {
-    Install-Module -Name Az.Resources -AllowClobber -Scope CurrentUser
+    Install-Module -Name Az.Resources -AllowClobber -Scope CurrentUser -Confirm:$false
 }
 
 Describe "Resource Group" -Tag resourceGroup {
