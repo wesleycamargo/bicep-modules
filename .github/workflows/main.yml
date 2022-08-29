@@ -35,6 +35,13 @@ jobs:
           Write-Host $versionFile.version
           Write-Host $versionFile.module
 
+          echo "bicepModuleVersion=$(echo $versionFile.version | cut -c 1-6)" >> $env:GITHUB_ENV
+          echo "bicepModuleName=$(echo $versionFile.module | cut -c 1-6)" >> $env:GITHUB_ENV
+
+      - name: Test
+        run: |
+          Write-Host $env:bicepModuleName
+          Write-Host $env:bicepModuleVersion
       # - name: Set SemVer
       #   run: |
       #     $version = (Get-Content -Raw -Path 'version.json' | ConvertFrom-Json).version
