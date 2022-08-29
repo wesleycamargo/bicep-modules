@@ -22,26 +22,18 @@ jobs:
         run: |
           
           cd $env:GITHUB_WORKSPACE
-          Get-ChildItem -Recurse
-          git status 
 
-          git diff origin/feature/initial-structure origin/main
-
-          git remote -v
-
-          git pull
-
-          # $versionFile = (git diff --name-only $env:GITHUB_REF origin/main) -match "/version.json"
+          $versionFile = (git diff --name-only $env:GITHUB_REF origin/main) -match "/version.json"
           
-          # if($versionFile.Count -gt 1){ 
-          #   Write-Host "More than one version file updated"
-          #   exit 1
-          # }
+          if($versionFile.Count -gt 1){ 
+            Write-Host "More than one version file updated"
+            exit 1
+          }
 
-          # $versionFile = Get-Content -Raw -Path $versionFile | ConvertFrom-Json
+          $versionFile = Get-Content -Raw -Path $versionFile | ConvertFrom-Json
 
-          # Write-Host $versionFile.version
-          # Write-Host $versionFile.module
+          Write-Host $versionFile.version
+          Write-Host $versionFile.module
 
       # - name: Set SemVer
       #   run: |
