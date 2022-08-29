@@ -25,6 +25,10 @@ jobs:
 
           git diff --name-only origin/main
 
+          git remote -v
+
+          git pull
+
           # $versionFile = (git diff --name-only $env:GITHUB_REF origin/main) -match "/version.json"
           
           # if($versionFile.Count -gt 1){ 
