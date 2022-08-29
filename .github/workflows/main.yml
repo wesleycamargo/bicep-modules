@@ -39,6 +39,7 @@ jobs:
           echo "bicepModuleName=$(echo $versionFile.module | cut -c 1-6)" >> $env:GITHUB_ENV
 
       - name: Test
+        shell: pwsh
         run: |
           Write-Host $env:bicepModuleName
           Write-Host $env:bicepModuleVersion
