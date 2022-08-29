@@ -41,8 +41,13 @@ jobs:
       - name: Test
         shell: pwsh
         run: |
-          Write-Host $env:bicepModuleName
-          Write-Host $env:bicepModuleVersion
+          
+          $tagVersion = "$env:bicepModuleName-$env:bicepModuleVersion"
+          Write-Host $tagVersion
+
+          cd $env:GITHUB_WORKSPACE
+
+          git tag -l v0.0.1
       # - name: Set SemVer
       #   run: |
       #     $version = (Get-Content -Raw -Path 'version.json' | ConvertFrom-Json).version
