@@ -18,7 +18,7 @@ jobs:
       - name: Get version
         shell: pwsh
         run: |
-          $versionFile = (git diff --name-only $GITHUB_REF origin/main) -match "/version.json"
+          $versionFile = (git diff --name-only $env:GITHUB_REF origin/main) -match "/version.json"
           
           if($versionFile.Count -gt 1){ 
             Write-Host "More than one version file updated"
