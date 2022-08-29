@@ -31,7 +31,23 @@ jobs:
             #   Write-Host $env:GITHUB_WORKSPACE
 
             Invoke-Expression -Command $env:GITHUB_WORKSPACE/pipelines/common/scripts/tests/PesterRunner.ps1
-            
-      # - name: Pester
-      #   run: ./pipelines/common/scripts/tests/PesterRunner.ps1
-      #   shell: pwsh
+
+
+      - name: Get version
+        run: |
+          $versionFile = (git diff --name-only main) -match "/version.json"
+          
+          if($versionFile.Count -gt 1){ 
+            Write-Host "More than one version file updated"
+            exit 1
+          }
+
+          $versionFile = (Get-Content -Raw -Path $versionFile | ConvertFrom-Json)
+
+          echo $versionFile.version
+          echo $versionFile.module
+
+      # - name: Set SemVer
+      #   run: |
+      #     $version = (Get-Content -Raw -Path 'version.json' | ConvertFrom-Json).version
+      #     echo "version=$(echo $version | cut -c 1-6)" >> $env:GITHUB_ENV
