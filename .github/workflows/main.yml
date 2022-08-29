@@ -23,7 +23,7 @@ jobs:
           Get-ChildItem -Recurse
           git status 
 
-          git diff main
+          git diff origin/feature/initial-structure origin/main
 
           git remote -v
 
