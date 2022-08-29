@@ -18,6 +18,8 @@ jobs:
       - name: Get version
         shell: pwsh
         run: |
+          
+          cd $env:GITHUB_WORKSPACE
           Get-ChildItem -Recurse
           
           $versionFile = (git diff --name-only $env:GITHUB_REF origin/main) -match "/version.json"
