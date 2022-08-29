@@ -47,7 +47,11 @@ jobs:
 
           cd $env:GITHUB_WORKSPACE
 
-          git tag -l v0.0.1
+          $existingTag = git tag -l v0.0.1
+
+          if($existingTag){
+            Write-Host "Version '$existingTag' already exist"
+          }
       # - name: Set SemVer
       #   run: |
       #     $version = (Get-Content -Raw -Path 'version.json' | ConvertFrom-Json).version
