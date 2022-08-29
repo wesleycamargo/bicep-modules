@@ -22,6 +22,9 @@ jobs:
           cd $env:GITHUB_WORKSPACE
           Get-ChildItem -Recurse
           git status 
+
+          git diff --name-only origin/main
+
           # $versionFile = (git diff --name-only $env:GITHUB_REF origin/main) -match "/version.json"
           
           # if($versionFile.Count -gt 1){ 
