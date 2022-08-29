@@ -23,7 +23,7 @@ jobs:
           Get-ChildItem -Recurse
           git status 
 
-          git diff --name-only main
+          git diff --name-only $env:GITHUB_REF..main
 
           git remote -v
 
