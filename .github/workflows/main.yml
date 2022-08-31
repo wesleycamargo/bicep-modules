@@ -53,8 +53,8 @@ jobs:
           foreach($file in $changedFiles){
             Write-Host "Validating '$file'"
             $file -contains "src/modules"
-            # if(($file -notcontains $env:bicepModuleName) -and ($file -contains "src/modules"))
-            if(($file -notcontains $env:bicepModuleName) )
+            $env:bicepModuleName
+            if(($file -notcontains $env:bicepModuleName) -and ($file -contains "src/modules"))            
             {
               Write-Error "Error: Identified changes in a different module"          
             }
