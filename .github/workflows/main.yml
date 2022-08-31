@@ -47,7 +47,7 @@ jobs:
 
           foreach($file in $changedFiles){
             Write-Host "$file"
-            if($file -notcontains $versionFile.module -and $file -contains src/modules)
+            if(($file -notcontains $versionFile.module) -and ($file -contains "src/modules"))
             {
               Write-Error "Many modules modified"
             }
