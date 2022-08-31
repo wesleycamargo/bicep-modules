@@ -36,13 +36,13 @@ jobs:
 
 
 
-          $versionFile = Get-Content -Raw -Path $versionFile | ConvertFrom-Json
+          # $versionFile = Get-Content -Raw -Path $versionFile | ConvertFrom-Json
 
-          Write-Host $versionFile.version
-          Write-Host $versionFile.module
+          # Write-Host $versionFile.version
+          # Write-Host $versionFile.module
 
-          Write-Output "bicepModuleVersion=$($versionFile.version)" >> $env:GITHUB_ENV
-          Write-Output "bicepModuleName=$($versionFile.module)" >> $env:GITHUB_ENV
+          # Write-Output "bicepModuleVersion=$($versionFile.version)" >> $env:GITHUB_ENV
+          # Write-Output "bicepModuleName=$($versionFile.module)" >> $env:GITHUB_ENV
 
       - name: Test
         shell: pwsh
