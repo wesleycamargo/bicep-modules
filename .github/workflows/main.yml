@@ -41,10 +41,11 @@ jobs:
           Write-Output "bicepModuleVersion=$($versionFile.version)" >> $env:GITHUB_ENV
           Write-Output "bicepModuleName=$($versionFile.module)" >> $env:GITHUB_ENV
       
-      - name: Validate module changes
+      - name: Validate changed modules
         shell: pwsh
         run: |
           Write-Host "Obtaining changed files..."
+          $lastTag = git describe --tags --abbrev=0  
           $changedFiles = (git diff --name-only $lastTag $env:GITHUB_REF) 
 
           Write-Host $changedFiles
