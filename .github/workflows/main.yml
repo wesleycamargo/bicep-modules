@@ -1,36 +1,78 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [ "main" ]  
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Get version
+        shell: pwsh
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          
+          cd $env:GITHUB_WORKSPACE
+
+          # Validate version file
+          $lastTag = git describe --tags --abbrev=0  
+          $versionFile = (git diff --name-only $lastTag $env:GITHUB_REF) -match "/version.json"
+          
+          $versionFile
+          
+          if($versionFile.Count -gt 1){ 
+            Write-Host "More than one version file updated"
+            exit 1
+          }elseif($null -eq $versionFile -or $versionFile.Count -eq 0){
+            Write-Host "No version files were updated"
+            # exit 1
+          }
+
+          $versionFile = Get-Content -Raw -Path $versionFile | ConvertFrom-Json
+
+          Write-Host "Module changed: '$($versionFile.module)'"
+          Write-Host "Module version: '$($versionFile.version)'"
+          
+          Write-Output "bicepModuleVersion=$($versionFile.version)" >> $env:GITHUB_ENV
+          Write-Output "bicepModuleName=$($versionFile.module)" >> $env:GITHUB_ENV
+      
+      - name: Validate changed modules
+        shell: pwsh
+        run: |
+          Write-Host "Obtaining changed files..."
+          $lastTag = git describe --tags --abbrev=0  
+          $changedFiles = (git diff --name-only $lastTag $env:GITHUB_REF) | Where-Object { $_ -like "*src/modules*" }
+
+          foreach ($file in $changedFiles ) {
+              Write-Host "Validating: '$file'"
+              if ($file -notlike "*/$env:bicepModuleName/*") {
+                  Write-Error "Error: Identified changes in a module other than '$env:bicepModuleName'"
+              }
+          }
+
+      - name: Test
+        shell: pwsh
+        run: |
+          
+          $tagVersion = "$env:bicepModuleName-v$env:bicepModuleVersion"
+          Write-Host $tagVersion
+
+          cd $env:GITHUB_WORKSPACE
+
+          $existingTag = git tag -l $tagVersion
+
+          if($existingTag){
+            Write-Host "Version '$tagVersion' already exist"
+            exit 1
+          }
+            
+          Write-Host "Generating tag '$tagVersion'"
+          git tag $tagVersion
+          git push --tags
