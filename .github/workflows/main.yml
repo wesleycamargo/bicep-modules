@@ -22,7 +22,7 @@ jobs:
           cd $env:GITHUB_WORKSPACE
 
           $lastTag = git describe --tags --abbrev=0  
-          $versionFile = git diff --name-only $lastTag $env:GITHUB_REF -match "/version.json"
+          $versionFile = (git diff --name-only $lastTag $env:GITHUB_REF) -match "/version.json"
 
           # $versionFile = (git diff --name-only $env:GITHUB_REF origin/main) -match "/version.json"
           
