@@ -18,15 +18,12 @@ jobs:
       - name: Get version
         shell: pwsh
         run: |
-          
           cd $env:GITHUB_WORKSPACE
 
           # Validate version file
           $lastTag = git describe --tags --abbrev=0  
           (git diff --name-only $lastTag $env:GITHUB_REF)
-          $versionFile = (git diff --name-only $lastTag $env:GITHUB_REF) -match "/version.json"
-          
-          $versionFile
+          $versionFile = (git diff --name-only $lastTag $env:GITHUB_REF) -match "/version.json"          
           
           if($versionFile.Count -gt 1){ 
             Write-Error "More than one version file updated"
@@ -59,7 +56,6 @@ jobs:
       - name: Create git tag
         shell: pwsh
         run: |
-          
           $tagVersion = "$env:bicepModuleName-v$env:bicepModuleVersion"
           Write-Host $tagVersion
 
