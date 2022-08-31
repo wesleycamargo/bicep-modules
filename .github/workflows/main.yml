@@ -49,10 +49,10 @@ jobs:
           $changedFiles = (git diff --name-only $lastTag $env:GITHUB_REF).Split(" ")
 
           foreach ($file in $changedFiles | Where-Object { $_ -like "*src/modules*" }) {
-            Write-Host "Validating: '$file'"
-            if (($file -notcontains $env:bicepModuleName)) {
-                Write-Error "Error: Identified changes in a different module"          
-            }
+              Write-Host "Validating: '$file'"
+              if ($file -notlike "*/$env:bicepModuleName/*") {
+                  Write-Error "Error: Identified changes in a different module"          
+              }
           }
 
       - name: Test
