@@ -47,6 +47,8 @@ jobs:
           Write-Host "Obtaining changed files..."
           $changedFiles = (git diff --name-only $lastTag $env:GITHUB_REF) 
 
+          Write-Host $changedFiles
+
           foreach($file in $changedFiles){
             Write-Host "Validating '$file'"
             if(($file -notcontains $env:bicepModuleName) -and ($file -contains "src/modules"))
