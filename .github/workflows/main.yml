@@ -40,16 +40,19 @@ jobs:
           
           Write-Output "bicepModuleVersion=$($versionFile.version)" >> $env:GITHUB_ENV
           Write-Output "bicepModuleName=$($versionFile.module)" >> $env:GITHUB_ENV
-
-          # Validate directory of changed files          
-
+      
+      - name: Validate module changes
+        shell: pwsh
+        run: |
+       
           $changedFiles = (git diff --name-only $lastTag $env:GITHUB_REF) 
 
           foreach($file in $changedFiles){
             Write-Host "$file"
-            if(($file -notcontains $versionFile.module) -and ($file -contains "src/modules"))
+            if(($file -notcontains $env:bicepModuleName) -and ($file -contains "src/modules"))
             {
-              Write-Error "Many modules modified"
+              Write-Error "Error: Identified changes in a different module"
+              Write-Error $file
             }
           }
 
