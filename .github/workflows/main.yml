@@ -56,7 +56,7 @@ jobs:
               }
           }
 
-      - name: Test
+      - name: Create git tag
         shell: pwsh
         run: |
           
