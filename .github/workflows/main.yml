@@ -46,12 +46,10 @@ jobs:
         run: |
           Write-Host "Obtaining changed files..."
           $lastTag = git describe --tags --abbrev=0  
-          $changedFiles = (git diff --name-only $lastTag $env:GITHUB_REF) 
-
-          Write-Host $changedFiles
-
+          $changedFiles = (git diff --name-only $lastTag $env:GITHUB_REF).Split(" ")
+     
           foreach($file in $changedFiles){
-            Write-Host "Validating '$file'"
+            Write-Host "Validating: '$file'"
             $file -contains "src/modules"
             $file -notcontains $env:bicepModuleName
             if(($file -notcontains $env:bicepModuleName) -and ($file -contains "src/modules"))            
