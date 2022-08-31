@@ -24,7 +24,9 @@ jobs:
           # Validate version file
           $lastTag = git describe --tags --abbrev=0  
           $versionFile = (git diff --name-only $lastTag $env:GITHUB_REF) -match "/version.json"
-
+          
+          $versionFile
+          
           if($versionFile.Count -gt 1){ 
             Write-Host "More than one version file updated"
             exit 1
