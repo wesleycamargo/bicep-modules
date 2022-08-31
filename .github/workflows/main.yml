@@ -33,24 +33,32 @@ jobs:
             # exit 1
           }
 
+          $versionFile = Get-Content -Raw -Path $versionFile | ConvertFrom-Json
+
+          Write-Host $versionFile.version
+          Write-Host $versionFile.module
+          
+          Write-Output "bicepModuleVersion=$($versionFile.version)" >> $env:GITHUB_ENV
+          Write-Output "bicepModuleName=$($versionFile.module)" >> $env:GITHUB_ENV
+
           # Validate directory of changed files          
 
           $changedFiles = (git diff --name-only $lastTag $env:GITHUB_REF) 
 
           foreach($file in $changedFiles){
             Write-Host "$file"
+            if($file -notcontains $versionFile.module)
+            {
+              Write-Error "Many modules modified"
+            }
           }
 
-          Get-ChildItem $versionFile | Select-Object Directory
+
           
 
-          $versionFile = Get-Content -Raw -Path $versionFile | ConvertFrom-Json
 
-          Write-Host $versionFile.version
-          Write-Host $versionFile.module
 
-          Write-Output "bicepModuleVersion=$($versionFile.version)" >> $env:GITHUB_ENV
-          Write-Output "bicepModuleName=$($versionFile.module)" >> $env:GITHUB_ENV
+
 
       - name: Test
         shell: pwsh
