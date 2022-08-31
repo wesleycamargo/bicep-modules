@@ -61,7 +61,7 @@ jobs:
         shell: pwsh
         run: |
           
-          $tagVersion = "$env:bicepModuleName-$env:bicepModuleVersion"
+          $tagVersion = "$env:bicepModuleName-v$env:bicepModuleVersion"
           Write-Host $tagVersion
 
           cd $env:GITHUB_WORKSPACE
