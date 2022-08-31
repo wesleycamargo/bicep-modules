@@ -29,7 +29,7 @@ jobs:
           if($versionFile.Count -gt 1){ 
             Write-Host "More than one version file updated"
             exit 1
-          }elseif($versionFile.Count -gt 0){
+          }elseif($null -eq $versionFile -or $versionFile.Count -eq 0){
             Write-Host "No version files were updated"
             exit 1
           }
