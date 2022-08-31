@@ -47,14 +47,11 @@ jobs:
           Write-Host "Obtaining changed files..."
           $lastTag = git describe --tags --abbrev=0  
           $changedFiles = (git diff --name-only $lastTag $env:GITHUB_REF).Split(" ")
-     
-          foreach($file in $changedFiles){
+
+          foreach ($file in $changedFiles | Where-Object { $_ -like "*src/modules*" }) {
             Write-Host "Validating: '$file'"
-            $file -contains "src/modules"
-            $file -notcontains $env:bicepModuleName
-            if(($file -notcontains $env:bicepModuleName) -and ($file -contains "src/modules"))            
-            {
-              Write-Error "Error: Identified changes in a different module"          
+            if (($file -notcontains $env:bicepModuleName)) {
+                Write-Error "Error: Identified changes in a different module"          
             }
           }
 
