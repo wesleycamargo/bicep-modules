@@ -46,9 +46,9 @@ jobs:
         run: |
           Write-Host "Obtaining changed files..."
           $lastTag = git describe --tags --abbrev=0  
-          $changedFiles = (git diff --name-only $lastTag $env:GITHUB_REF).Split(" ")
+          $changedFiles = (git diff --name-only $lastTag $env:GITHUB_REF) | Where-Object { $_ -like "*src/modules*" }
 
-          foreach ($file in $changedFiles | Where-Object { $_ -like "*src/modules*" }) {
+          foreach ($file in $changedFiles ) {
               Write-Host "Validating: '$file'"
               if ($file -notlike "*/$env:bicepModuleName/*") {
                   Write-Error "Error: Identified changes in a different module"          
