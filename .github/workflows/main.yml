@@ -64,8 +64,7 @@ jobs:
           $existingTag = git tag -l $tagVersion
 
           if($existingTag){
-            Write-Host "Version '$tagVersion' already exist"
-            exit 1
+            Write-Error "Version '$tagVersion' already exist"
           }
             
           Write-Host "Generating tag '$tagVersion'"
