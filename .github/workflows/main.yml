@@ -51,7 +51,7 @@ jobs:
           foreach ($file in $changedFiles ) {
               Write-Host "Validating: '$file'"
               if ($file -notlike "*/$env:bicepModuleName/*") {
-                  Write-Error "Error: Identified changes in a different module"          
+                  Write-Error "Error: Identified changes in a module other than '$env:bicepModuleName'"
               }
           }
 
