@@ -35,8 +35,8 @@ jobs:
 
           $versionFile = Get-Content -Raw -Path $versionFile | ConvertFrom-Json
 
-          Write-Host $versionFile.version
-          Write-Host $versionFile.module
+          Write-Host "Module changed: '$versionFile.module'"
+          Write-Host "Module version: '$versionFile.version'"
           
           Write-Output "bicepModuleVersion=$($versionFile.version)" >> $env:GITHUB_ENV
           Write-Output "bicepModuleName=$($versionFile.module)" >> $env:GITHUB_ENV
@@ -44,15 +44,14 @@ jobs:
       - name: Validate module changes
         shell: pwsh
         run: |
-       
+          Write-Host "Obtaining changed files..."
           $changedFiles = (git diff --name-only $lastTag $env:GITHUB_REF) 
 
           foreach($file in $changedFiles){
-            Write-Host "$file"
+            Write-Host "Validating '$file'"
             if(($file -notcontains $env:bicepModuleName) -and ($file -contains "src/modules"))
             {
-              Write-Error "Error: Identified changes in a different module"
-              Write-Error $file
+              Write-Error "Error: Identified changes in a different module"          
             }
           }
 
