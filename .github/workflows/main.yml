@@ -35,8 +35,8 @@ jobs:
 
           $versionFile = Get-Content -Raw -Path $versionFile | ConvertFrom-Json
 
-          Write-Host "Module changed: '$versionFile.module'"
-          Write-Host "Module version: '$versionFile.version'"
+          Write-Host "Module changed: '$($versionFile.module)'"
+          Write-Host "Module version: '$($versionFile.version)'"
           
           Write-Output "bicepModuleVersion=$($versionFile.version)" >> $env:GITHUB_ENV
           Write-Output "bicepModuleName=$($versionFile.module)" >> $env:GITHUB_ENV
