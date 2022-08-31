@@ -34,7 +34,7 @@ jobs:
             exit 1
           }
 
-
+          Write-Host $versionFile
 
           # $versionFile = Get-Content -Raw -Path $versionFile | ConvertFrom-Json
 
