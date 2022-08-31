@@ -16,6 +16,7 @@ Describe "Resource Group" -Tag resourceGroup {
 AfterAll {
     Write-Host "Removing resources..."
 
+    # TODO: Change module to use Azure PowerShell instead of Azure CLI
     Import-Module ./pipelines/common/scripts/helpers/AzureHelpers.psm1
 
     Remove-ResourceGroupByName -name "rg-test"

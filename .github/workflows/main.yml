@@ -2,9 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ "feature/*" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [ "feature/*" ]  
 
   workflow_dispatch:
 
@@ -57,27 +55,3 @@ jobs:
           Write-Host "Generating tag '$tagVersion'"
           git tag $tagVersion
           git push --tags
-      # - name: Set SemVer
-      #   run: |
-      #     $version = (Get-Content -Raw -Path 'version.json' | ConvertFrom-Json).version
-      #     echo "version=$(echo $version | cut -c 1-6)" >> $env:GITHUB_ENV
-
-
-      # - name: Azure Login
-      #   uses: Azure/login@v1.4.5
-      #   with:          
-      #     creds: ${{ secrets.AZURE_CREDENTIALS }}
-      #     enable-AzPSSession: true
-      
-
-      # - name: Run Azure PowerShell script
-      #   uses: azure/powershell@v1
-      #   with:
-      #     azPSVersion: "latest"      
-          
-      #     inlineScript: |
-      #       #   Write-Host $env:GITHUB_WORKSPACE
-
-      #       Invoke-Expression -Command $env:GITHUB_WORKSPACE/pipelines/common/scripts/tests/PesterRunner.ps1
-
-
