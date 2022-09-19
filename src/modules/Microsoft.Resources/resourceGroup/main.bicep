@@ -14,3 +14,12 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
     location: location
     tags: tags
 }
+
+@description('The name of the resource group.')
+output name string = resourceGroup.name
+
+@description('The resource ID of the resource group.')
+output resourceId string = resourceGroup.id
+
+@description('The location the resource was deployed into.')
+output location string = resourceGroup.location

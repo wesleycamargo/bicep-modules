@@ -9,4 +9,6 @@ $config.Output.Verbosity = "Detailed"
 
 $env:modulesDiretory
 
+$config.Filter.Tag = "namingConventionResourceGroup"
+
 Invoke-Pester -Configuration $config
