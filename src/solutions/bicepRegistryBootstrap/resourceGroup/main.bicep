@@ -23,7 +23,7 @@ param applicationSufix string = 'app'
 param environment string = 'exp'
  
 
-module naming 'br/CoreModules:namingconvention/namingconventionresourcegroup:v0.1.0' = {
+module naming '../../../modules/NamingConvention/namingConventionResourceGroup/main.bicep' = {
   name: 'naming'
 
   params: {
@@ -33,17 +33,7 @@ module naming 'br/CoreModules:namingconvention/namingconventionresourcegroup:v0.
   }
 }
 
-// module naming '../../modules/NamingConvention/namingConventionResourceGroup/main.bicep' = {
-//   name: 'naming'
-
-//   params: {
-//     workloadAffix: workloadAffix
-//     applicationSufix: applicationSufix
-//     environment: environment
-//   }
-// }
-
-module resourceGroup '../../modules/Microsoft.Resources/resourceGroup/main.bicep' = {
+module resourceGroup '../../../modules/Microsoft.Resources/resourceGroup/main.bicep' = {
   name: 'resourceGroup'
   params: {
     name: naming.outputs.resourceGroupName
