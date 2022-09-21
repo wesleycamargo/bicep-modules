@@ -6,11 +6,29 @@ param location string = deployment().location
 @description('Resource Group tags.')
 param tags object = {}
 
-module naming '../../modules/common/namingConventionResourceGroup/main.bicep' = {
+@description('Workload affix of the Resource Group.')
+param workloadAffix string = 'wl'
+
+@description('Application sufix.')
+@minLength(1)
+@maxLength(3)
+param applicationSufix string = 'app'
+
+@allowed([
+  'exp'
+  'dev'
+  'qua'
+  'uat'
+])
+param environment string = 'exp'
+
+module naming '../../modules/NamingConvention/namingConventionResourceGroup/main.bicep' = {
   name: 'naming'
 
   params: {
-    workloadAffix: 'wc'
+    workloadAffix: workloadAffix
+    applicationSufix: applicationSufix
+    environment: environment
   }
 }
 
@@ -23,10 +41,4 @@ module resourceGroup '../../modules/Microsoft.Resources/resourceGroup/main.bicep
   }
 }
 
-
-
-// resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-//   name: naming.outputs.resourceGroupName
-//   location: location
-//   tags: tags
-// }
+output resourceGroupName string = resourceGroup.outputs.name

@@ -16,7 +16,7 @@
             "type": "PowerShell",
             "request": "launch",
             // "script": "enter path or command to execute e.g.: ${workspaceFolder}/src/foo.ps1 or Invoke-Pester",
-            "script": "C:\\repo\\wes\\bicep\\bicep-modules\\pipelines\\common\\scripts\\tests\\PesterRunner.ps1",
+            "script": "${workspaceFolder}\\pipelines\\common\\scripts\\tests\\PesterRunner.ps1",
             "cwd": "${workspaceFolder}"
         }
     ]

@@ -18,10 +18,13 @@ param applicationSufix string = 'app'
 ])
 param environment string = 'exp'
 
+@minValue(001)
+@maxValue(999)
+param instanceNumber int = 001
+
 // variables
 var sharedNamePrefixes = loadJsonContent('./prefixes.json')
 var globalAffix = '${workloadAffix}-${applicationSufix}-${environment}'
+var globalAffixNoDashes = replace(globalAffix, '-', '')
 
-output resourceGroupName string = '${globalAffix}}-${sharedNamePrefixes.resourceGroupPrefix}'
-
-output azContainerRegistryName string = '${globalAffix}-${sharedNamePrefixes.containerRegistryPrefix}'
+output azContainerRegistryName string = '${globalAffixNoDashes}${sharedNamePrefixes.containerRegistryPrefix}${instanceNumber}'

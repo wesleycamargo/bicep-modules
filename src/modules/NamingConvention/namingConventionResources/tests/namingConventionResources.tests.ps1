@@ -6,12 +6,12 @@ BeforeAll {
         WorkloadAffix    = "wl"
         ApplicationSufix = "pst"
         Environment      = "exp"
-        Template         = "./src/modules/NamingConvention/namingConventionResourceGroup/main.bicep"
+        Template         = "./src/modules/NamingConvention/namingConventionResources/main.bicep"
     }
 }
 
-Describe "Naming Convention Resource Group" -Tag namingConventionResourceGroup {
-    Context "Validate Naming Convention for Resource Group" {
+Describe "Naming Convention Azure Resources" -Tag namingConventionResources {
+    Context "Validate Naming Convention for Azure Container Registry" {
         It "Should Not be null" {
             $deployment = New-AzSubscriptionDeployment -Location westeurope `
                 -TemplateFile $Context.Template `
@@ -19,7 +19,7 @@ Describe "Naming Convention Resource Group" -Tag namingConventionResourceGroup {
                 -applicationSufix $Context.ApplicationSufix `
                 -environment $Context.Environment
                                 
-            $resourceGroupName = $deployment.outputs['resourceGroupName'].Value
+            $resourceGroupName = $deployment.outputs['azContainerRegistryName'].Value
                        
             $resourceGroupName | Should -Not -Be $null
         }
@@ -31,7 +31,7 @@ Describe "Naming Convention Resource Group" -Tag namingConventionResourceGroup {
                 -applicationSufix $Context.ApplicationSufix `
                 -environment $Context.Environment 
                 
-            $resourceGroupName = $deployment.outputs['resourceGroupName'].Value
+            $resourceGroupName = $deployment.outputs['azContainerRegistryName'].Value
                        
             $resourceGroupName | Should -BeLike "$($Context.WorkloadAffix)-*"
         }
@@ -43,7 +43,7 @@ Describe "Naming Convention Resource Group" -Tag namingConventionResourceGroup {
                 -applicationSufix $Context.ApplicationSufix `
                 -environment $Context.Environment 
                 
-            $resourceGroupName = $deployment.outputs['resourceGroupName'].Value
+            $resourceGroupName = $deployment.outputs['azContainerRegistryName'].Value
                        
             $resourceGroupName | Should -BeLike "*-$($Context.ApplicationSufix)-*"
         }
@@ -55,21 +55,10 @@ Describe "Naming Convention Resource Group" -Tag namingConventionResourceGroup {
                 -applicationSufix $Context.ApplicationSufix `
                 -environment $Context.Environment 
                 
-            $resourceGroupName = $deployment.outputs['resourceGroupName'].Value
+            $resourceGroupName = $deployment.outputs['azContainerRegistryName'].Value
                        
             $resourceGroupName | Should -BeLike "*-$($Context.Environment)-*"
         }
-
-        It "Should finish with rg" {
-            $deployment = New-AzSubscriptionDeployment -Location westeurope `
-                -TemplateFile $Context.Template `
-                -workloadAffix $Context.WorkloadAffix `
-                -applicationSufix $Context.ApplicationSufix `
-                -environment $Context.Environment 
-                
-            $resourceGroupName = $deployment.outputs['resourceGroupName'].Value
-                       
-            $resourceGroupName | Should -BeLike "*-rg"
-        }
+        
     }
 }
