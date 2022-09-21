@@ -18,9 +18,9 @@ param applicationSufix string = 'app'
 ])
 param environment string = 'exp'
 
-@minValue(001)
-@maxValue(999)
-param instanceNumber int = 001
+@minLength(3)
+@maxLength(3)
+param instanceNumber string = '001'
 
 // variables
 var sharedNamePrefixes = loadJsonContent('./prefixes.json')

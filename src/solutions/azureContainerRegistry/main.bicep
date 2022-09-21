@@ -5,11 +5,16 @@ param location string = resourceGroup().location
 @description('Workload affix of the Azure Container.')
 param workloadAffix string = 'wc'
 
+@minLength(3)
+@maxLength(3)
+param instanceNumber string = '001'
+
 module naming '../../modules/NamingConvention/namingConventionResources/main.bicep' = {
   name: 'naming'
 
   params: {
     workloadAffix: workloadAffix
+    instanceNumber: instanceNumber
   }
 }
 
@@ -18,6 +23,7 @@ module acr '../../modules/Microsoft.ContainerRegistry/registry/main.bicep' = {
   params: {
     name: naming.outputs.azContainerRegistryName
     location: location
+
   }
 }
 
