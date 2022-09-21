@@ -9,6 +9,8 @@ param (
     [string]$Location = "westeurope"
 )
 
+Get-ChildItem -Recurse
+
 $resourceGroup = az deployment sub create `
     -f "./resourceGroup/main.bicep" `
     -l $Location `
@@ -19,3 +21,6 @@ az deployment group create `
     -f "./azureContainerRegistry/main.bicep" `
     -g $resourceGroup.Properties.Outputs.resourceGroupName.value `
     --parameters workloadAffix=$WorkloadAffix applicationSufix=$ApplicationSufix instanceNumber=001
+
+
+    
