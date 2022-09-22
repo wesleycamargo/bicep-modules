@@ -18,7 +18,7 @@ $resourceGroup = az deployment sub create `
     -o json | ConvertFrom-Json
 
 az deployment group create `
-    -f "./src/solutions/bicepRegistryBootstrap/azureContainerRegistry/main.bicep" `    
+    -f "./src/solutions/bicepRegistryBootstrap/azureContainerRegistry/main.bicep" `
     -g $resourceGroup.Properties.Outputs.resourceGroupName.value `
     --parameters workloadAffix=$WorkloadAffix applicationSufix=$ApplicationSufix instanceNumber=001
 
