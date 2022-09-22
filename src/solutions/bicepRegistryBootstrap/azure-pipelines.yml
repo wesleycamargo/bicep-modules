@@ -1,12 +1,17 @@
 trigger:
-  - main
+  - feature/*
   
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
-  
+stages:
+  - stage: Build
+    jobs:
+      - job: buildBicep
+        steps:
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'ServicePrincipal'
+              scriptType: 'pscore'
+              scriptLocation: 'scriptPath'
+              scriptPath: '$(Build.SourcesDirectory)/src/solutions/bicepRegistryBootstrap/bicepRegistryBootstrap.ps1'
