@@ -15,6 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Azure Login
+        uses: Azure/login@v1.4.6
+        with:
+          creds: AZURE_CREDENTIALS
+
       - name: Create Bicep Registry
         shell: pwsh
         run: |
