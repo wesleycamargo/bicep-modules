@@ -16,5 +16,4 @@ stages:
               scriptType: 'pscore'
               scriptLocation: 'scriptPath'
               scriptPath: '$(Build.SourcesDirectory)/src/solutions/bicepRegistryBootstrap/bicepRegistryBootstrap.ps1'
-      - 
-  
+              arguments: '-WorkingDirectory $(Build.SourcesDirectory)'
