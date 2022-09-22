@@ -15,10 +15,15 @@ stages:
       - job: BicepModulesDeploy
         displayName: Bicep Modules Deploy
         steps:
+          - checkout: self
+            persistCredentials: true          
+          
           - powershell: |
               cd $(Build.SourcesDirectory)
 
               Get-ChildItem -Recurse
+
+              git status
               git describe --tags 
 
               Write-Host "Validate version file"
