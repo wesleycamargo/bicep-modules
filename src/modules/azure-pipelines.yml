@@ -15,11 +15,12 @@ stages:
       - job: BicepModulesDeploy
         displayName: Bicep Modules Deploy
         steps:
-          - powershell: | 
+          - powershell: |
               cd $(Build.SourcesDirectory)
 
+              Get-ChildItem -Recurse
               git describe --tags 
-              
+
               Write-Host "Validate version file"
               $lastTag = git describe --tags --abbrev=0  
               
