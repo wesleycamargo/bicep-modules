@@ -17,7 +17,9 @@ stages:
         steps:
           - checkout: self
             persistCredentials: true          
-          
+            clean: false
+            fetchDepth: 0
+
           - powershell: |
               cd $(Build.SourcesDirectory)
 
@@ -26,8 +28,8 @@ stages:
               git status
               git describe --tags 
 
-              # Write-Host "Validate version file"
-              # $lastTag = git describe --tags --abbrev=0  
+              Write-Host "Validate version file"
+              $lastTag = git describe --tags --abbrev=0  
               
 
               
