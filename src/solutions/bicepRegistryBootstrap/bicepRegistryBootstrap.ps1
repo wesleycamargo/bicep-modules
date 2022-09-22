@@ -11,11 +11,15 @@ param (
 
 Get-ChildItem -Recurse
 
+Write-Host "Creating resource group..."
+
 $resourceGroup = az deployment sub create `
     -f "./src/solutions/bicepRegistryBootstrap/resourceGroup/main.bicep" `
     -l $Location `
     --parameters workloadAffix=$WorkloadAffix applicationSufix=$ApplicationSufix `
     -o json | ConvertFrom-Json
+
+Write-Host "Creating container registry..."
 
 az deployment group create `
     -f "./src/solutions/bicepRegistryBootstrap/azureContainerRegistry/main.bicep" `
