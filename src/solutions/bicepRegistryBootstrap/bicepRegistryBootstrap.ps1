@@ -12,13 +12,13 @@ param (
 Get-ChildItem -Recurse
 
 $resourceGroup = az deployment sub create `
-    -f "./resourceGroup/main.bicep" `
+    -f "./src/solutions/bicepRegistryBootstrap/resourceGroup/main.bicep" `
     -l $Location `
     --parameters workloadAffix=$WorkloadAffix applicationSufix=$ApplicationSufix `
     -o json | ConvertFrom-Json
 
 az deployment group create `
-    -f "./azureContainerRegistry/main.bicep" `
+    -f "./src/solutions/bicepRegistryBootstrap/azureContainerRegistry/main.bicep" `    
     -g $resourceGroup.Properties.Outputs.resourceGroupName.value `
     --parameters workloadAffix=$WorkloadAffix applicationSufix=$ApplicationSufix instanceNumber=001
 
