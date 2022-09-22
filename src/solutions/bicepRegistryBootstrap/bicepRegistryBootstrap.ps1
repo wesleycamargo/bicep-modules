@@ -6,15 +6,15 @@ param (
     [Parameter()]
     [string]$ApplicationSufix = "mod",
     [Parameter()]
-    [string]$Location = "westeurope"
+    [string]$Location = "westeurope",
+    [Parameter()]
+    [string]$WorkingDirectory
 )
-
-Get-ChildItem -Recurse
 
 Write-Host "Creating resource group..."
 
 $resourceGroup = az deployment sub create `
-    -f "./src/solutions/bicepRegistryBootstrap/resourceGroup/main.bicep" `
+    -f "$WorkingDirectory/src/solutions/bicepRegistryBootstrap/resourceGroup/main.bicep" `
     -l $Location `
     --parameters workloadAffix=$WorkloadAffix applicationSufix=$ApplicationSufix `
     -o json | ConvertFrom-Json
@@ -22,9 +22,6 @@ $resourceGroup = az deployment sub create `
 Write-Host "Creating container registry..."
 
 az deployment group create `
-    -f "./src/solutions/bicepRegistryBootstrap/azureContainerRegistry/main.bicep" `
+    -f "$WorkingDirectory/src/solutions/bicepRegistryBootstrap/azureContainerRegistry/main.bicep" `
     -g $resourceGroup.Properties.Outputs.resourceGroupName.value `
     --parameters workloadAffix=$WorkloadAffix applicationSufix=$ApplicationSufix instanceNumber=001
-
-
-    

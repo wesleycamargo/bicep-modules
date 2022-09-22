@@ -1,0 +1,41 @@
+trigger:
+  - feature/*
+  
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: dev
+    jobs:
+      - job: BicepModulesDeploy
+        displayName: Bicep Modules Deploy
+        steps:
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'ServicePrincipal'
+              scriptType: 'pscore'
+              scriptLocation: 'scriptPath'
+              scriptPath: '$(Build.SourcesDirectory)/src/solutions/bicepRegistryBootstrap/bicepRegistryBootstrap.ps1'
+
+
+
+#               Write-Host "Loading existing modules..."
+
+# $acrId = $acrDeploy.properties.outputs.acrId.value
+
+# $acrId = "brmodexpcr001.azurecr.io"
+
+# $coreModules = "$WorkingDirectory/src/modules"
+
+# $versionFiles = Get-ChildItem $coreModules -Recurse -Filter "version.json" | Select-Object FullName 
+
+# foreach ($versionFilePath in $versionFiles) {
+#     $versionFile = Get-Content -Raw -Path $versionFilePath.FullName | ConvertFrom-Json
+
+#     Write-Host "Module: '$($versionFile.module)'"
+#     Write-Host "Module version: '$($versionFile.version)'"
+
+#     $bicepModule = $versionFilePath.FullName.Replace("version.json", "main.bicep")
+    
+#     az bicep publish --file $bicepModule --target "br:$acrId/bicep/modules/$($versionFile.module):v$($versionFile.version)"
+# }
