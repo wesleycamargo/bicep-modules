@@ -42,53 +42,28 @@ stages:
               Write-Host "Module changed: '$($versionFile.module)'"
               Write-Host "Module version: '$($versionFile.version)'"
 
+              Write-Host "##vso[task.setvariable variable=bicepModuleVersion]$($versionFile.version)"
+              Write-Host "##vso[task.setvariable variable=bicepModuleName]$($versionFile.module)"
+
+
               # Write-Output "bicepModuleVersion=$($versionFile.version)" >> $env:GITHUB_ENV
               # Write-Output "bicepModuleName=$($versionFile.module)" >> $env:GITHUB_ENV
             workingDirectory: $(Build.SourcesDirectory)
             enabled: true
 
-          - task: AzureCLI@2
-            displayName: Deploy bicep modules
-            enabled: false
-            inputs:
-              azureSubscription: "ServicePrincipal"
-              scriptType: "pscore"
-              scriptLocation: "inlineScript"
-              workingDirectory: $(Build.SourcesDirectory)
-              inlineScript: |
-                Write-Host "Loading existing modules..."
-                               
-                $acrId = "brmodexpcr001.azurecr.io"
+          - powershell: |
+              Write-Host "Obtaining changed files..."
+              $lastTag = git tag --sort=-committerdate -l | Select -First 1 
 
-                $coreModules = "$(Build.SourcesDirectory)/src/modules"
+              $branch = "$(Build.SourceBranch)".Replace("refs/heads/", "origin/")
 
-                $versionFiles = Get-ChildItem $coreModules -Recurse -Filter "version.json" | Select-Object FullName 
+              $changedFiles = (git diff --name-only $lastTag $branch) | Where-Object { $_ -like "*src/modules*" }
 
-                foreach ($versionFilePath in $versionFiles) {
-                  Write-Host "Processing $($versionFilePath.FullName)"  
-                
-                  $versionFile = Get-Content -Raw -Path $versionFilePath.FullName | ConvertFrom-Json
-
-                  $gitTagVersion = "$($versionFile.module)-v$($versionFile.version)"
-
-                  Write-Host "Creating git tag: '$gitTagVersion'"
-
-                  $existingTag = git tag -l $gitTagVersion
-
-                  if($existingTag){
-                    Write-Host "##[warning]Version '$gitTagVersion' already exist"
-                  }else{
-                    Write-Host "Generating tag '$gitTagVersion'"
-                    git tag $gitTagVersion
-                    git push --tags     
+              foreach ($file in $changedFiles ) {
+                  Write-Host "Validating: '$file'"
+                  if ($file -notlike "*/$env:bicepModuleName/*") {
+                      Write-Error "Error: Identified changes in a module other than '$env:bicepModuleName'"
                   }
-                  
-                  Write-Host "Pushing bicep module '$gitTagVersion' to ACR"
-
-                  Write-Host "Module: '$($versionFile.module)'"
-                  Write-Host "Module version: '$($versionFile.version)'"
-
-                  $bicepModule = $versionFilePath.FullName.Replace("version.json", "main.bicep")
-                  
-                  az bicep publish --file $bicepModule --target "br:$acrId/bicep/modules/$($versionFile.module):v$($versionFile.version)"
-                }
+              }
+            displayName: Validate changed files
+            enabled: true
