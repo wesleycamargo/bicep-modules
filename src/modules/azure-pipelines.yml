@@ -60,8 +60,9 @@ stages:
                 $versionFiles = Get-ChildItem $coreModules -Recurse -Filter "version.json" | Select-Object FullName 
 
                 foreach ($versionFilePath in $versionFiles) {
-                  
                   $versionFile = Get-Content -Raw -Path $versionFilePath.FullName | ConvertFrom-Json
+
+                  Write-Host "Processing $($versionFilePath.FullName)"
 
                   $gitTagVersion = "$(versionFile.module)-v$($versionFile.version)"
 
