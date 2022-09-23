@@ -1,3 +1,17 @@
+parameters:
+  - name: WorkloadAffix
+    type: string
+    default: br
+  - name: ApplicationSufix
+    type: string
+    default: bcp
+  - name: Location
+    type: string
+    default: westeurope
+  - name: Environment
+    type: string
+    default: exp    
+
 trigger:
   branches:
     include:
@@ -33,16 +47,17 @@ stages:
               scriptLocation: "inlineScript"
               # workingDirectory: $(Build.SourcesDirectory)
               inlineScript: |
-                $WorkloadAffix = "br"
-                $ApplicationSufix = "bcp"
-                $Location = "westeurope"
+                $WorkloadAffix = "${{ parameters.WorkloadAffix }}"
+                $ApplicationSufix = "${{ parameters.ApplicationSufix }}"
+                $Location = "${{ parameters.Location }}"
+                $Environment = "${{ parameters.Environment }}"
 
                 Write-Host "Creating resource group..."
 
                 $resourceGroup = az deployment sub create `
                     -f "./src/solutions/bicepRegistryBootstrap/resourceGroup/main.bicep" `
                     -l $Location `
-                    --parameters workloadAffix=$WorkloadAffix applicationSufix=$ApplicationSufix `
+                    --parameters workloadAffix=$WorkloadAffix applicationSufix=$ApplicationSufix environment="$Environment" `
                     -o json | ConvertFrom-Json
                 
                 Write-Host "Creating container registry..."
@@ -50,7 +65,7 @@ stages:
                 $acrDeploy = az deployment group create `
                     -f "./src/solutions/bicepRegistryBootstrap/azureContainerRegistry/main.bicep" `
                     -g $resourceGroup.Properties.Outputs.resourceGroupName.value `
-                    --parameters workloadAffix=$WorkloadAffix applicationSufix=$ApplicationSufix instanceNumber=001 `
+                    --parameters workloadAffix=$WorkloadAffix applicationSufix=$ApplicationSufix instanceNumber=001 environment="$Environment" `
                     | ConvertFrom-Json -Depth 10
                 
                 Write-Host $acrDeploy
