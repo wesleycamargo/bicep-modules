@@ -99,5 +99,5 @@ stages:
 
                   $bicepModule = $versionFilePath.FullName.Replace("version.json", "main.bicep")
                   
-                  az bicep publish --file $bicepModule --target "br:$acrId/bicep/modules/$($versionFile.module):v$($versionFile.version)"
+                  az bicep publish --file $bicepModule --target "br:$(acrId)/bicep/modules/$($versionFile.module):v$($versionFile.version)"
                 }                    
