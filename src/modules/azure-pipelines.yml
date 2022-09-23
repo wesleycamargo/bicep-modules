@@ -40,10 +40,11 @@ stages:
               # Write-Output "bicepModuleVersion=$($versionFile.version)" >> $env:GITHUB_ENV
               # Write-Output "bicepModuleName=$($versionFile.module)" >> $env:GITHUB_ENV
             workingDirectory: $(Build.SourcesDirectory)
+            enabled: false
 
           - task: AzureCLI@2
             displayName: Deploy bicep modules
-            enabled: false
+            enabled: true
             inputs:
               azureSubscription: "ServicePrincipal"
               scriptType: "pscore"
