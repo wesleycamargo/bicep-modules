@@ -23,6 +23,8 @@ stages:
               Write-Host "Validate version file"
               $lastTag = git describe --tags --abbrev=0  
 
+              Get-ChildItem -Recurse
+
               (git diff --name-only $lastTag $(Build.SourceBranch))
               $versionFile = (git diff --name-only $lastTag $(Build.SourceBranch)) -match "/version.json"          
 
