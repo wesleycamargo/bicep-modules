@@ -64,11 +64,6 @@ stages:
                 
                   $versionFile = Get-Content -Raw -Path $versionFilePath.FullName | ConvertFrom-Json
 
-
-                  Get-Content -Raw -Path $versionFilePath.FullName
-                  Write-Host "Version file: $($versionFile)"
-                  
-
                   $gitTagVersion = "$($versionFile.module)-v$($versionFile.version)"
 
                   Write-Host "Creating git tag: '$gitTagVersion'"
@@ -77,11 +72,11 @@ stages:
 
                   if($existingTag){
                     Write-Host "##[warning]Version '$gitTagVersion' already exist"
+                  }else{
+                    Write-Host "Generating tag '$gitTagVersion'"
+                    git tag $gitTagVersion
+                    git push --tags     
                   }
-
-                  Write-Host "Generating tag '$gitTagVersion'"
-                  git tag $gitTagVersion
-                  git push --tags     
                   
                   Write-Host "Pushing bicep module '$gitTagVersion' to ACR"
 
