@@ -62,7 +62,7 @@ stages:
                 Write-Host "##vso[task.setvariable variable=acrId]$acrId"
 
           - task: AzureCLI@2
-            displayName: Deploy bicep modules
+            displayName: Deploy bicep modules to ACR
             enabled: true
             inputs:
               azureSubscription: "ServicePrincipal"
@@ -72,8 +72,36 @@ stages:
               inlineScript: |
                 Write-Host "Loading existing modules..."
                                 
-                # $acrId = "brmodexpcr001.azurecr.io"
+                $coreModules = "$(Build.SourcesDirectory)/src/modules"
 
+                $versionFiles = Get-ChildItem $coreModules -Recurse -Filter "version.json" | Select-Object FullName 
+
+                foreach ($versionFilePath in $versionFiles) {
+                  Write-Host "Processing $($versionFilePath.FullName)"  
+                
+                  $versionFile = Get-Content -Raw -Path $versionFilePath.FullName | ConvertFrom-Json
+
+                  Write-Host "Pushing bicep module '$($versionFile.module)' to ACR"
+
+                  Write-Host "Module: '$($versionFile.module)'"
+                  Write-Host "Module version: '$($versionFile.version)'"
+
+                  $bicepModule = $versionFilePath.FullName.Replace("version.json", "main.bicep")
+                  
+                  az bicep publish --file $bicepModule --target "br:$(acrId)/bicep/modules/$($versionFile.module):v$($versionFile.version)"
+                }   
+
+          - task: AzureCLI@2
+            displayName: Tagging bicep modules
+            enabled: true
+            inputs:
+              azureSubscription: "ServicePrincipal"
+              scriptType: "pscore"
+              scriptLocation: "inlineScript"
+              workingDirectory: $(Build.SourcesDirectory)
+              inlineScript: |
+                Write-Host "Loading existing modules..."
+                                
                 $coreModules = "$(Build.SourcesDirectory)/src/modules"
 
                 $versionFiles = Get-ChildItem $coreModules -Recurse -Filter "version.json" | Select-Object FullName 
@@ -96,13 +124,4 @@ stages:
                     git tag $gitTagVersion
                     git push --tags     
                   }
-                  
-                  Write-Host "Pushing bicep module '$gitTagVersion' to ACR"
-
-                  Write-Host "Module: '$($versionFile.module)'"
-                  Write-Host "Module version: '$($versionFile.version)'"
-
-                  $bicepModule = $versionFilePath.FullName.Replace("version.json", "main.bicep")
-                  
-                  az bicep publish --file $bicepModule --target "br:$(acrId)/bicep/modules/$($versionFile.module):v$($versionFile.version)"
                 }                    
