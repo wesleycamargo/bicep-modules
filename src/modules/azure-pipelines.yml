@@ -76,7 +76,7 @@ stages:
                   $existingTag = git tag -l $gitTagVersion
 
                   if($existingTag){
-                    Write-Error "Version '$gitTagVersion' already exist"
+                    Write-Host "Version '$gitTagVersion' already exist"
                   }
 
                   Write-Host "Generating tag '$gitTagVersion'"
