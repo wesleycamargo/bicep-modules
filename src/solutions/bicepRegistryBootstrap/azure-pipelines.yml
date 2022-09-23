@@ -31,7 +31,7 @@ stages:
               azureSubscription: "ServicePrincipal"
               scriptType: "pscore"
               scriptLocation: "inlineScript"
-              workingDirectory: $(Build.SourcesDirectory)
+              # workingDirectory: $(Build.SourcesDirectory)
               inlineScript: |
                 $WorkloadAffix = "br"
                 $ApplicationSufix = "bcp"
