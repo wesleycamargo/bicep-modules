@@ -69,7 +69,7 @@ stages:
                   Write-Host "Version file: $($versionFile)"
                   
 
-                  $gitTagVersion = "$(versionFile.module)-v$($versionFile.version)"
+                  $gitTagVersion = "$($versionFile.module)-v$($versionFile.version)"
 
                   Write-Host "Creating git tag: '$gitTagVersion'"
 
