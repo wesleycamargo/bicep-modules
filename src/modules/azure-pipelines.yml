@@ -61,6 +61,10 @@ stages:
 
                 foreach ($versionFilePath in $versionFiles) {
                   
+                  $versionFile = Get-Content -Raw -Path $versionFilePath.FullName | ConvertFrom-Json
+
+                  $gitTagVersion = "$(versionFile.module)-v$($versionFile.version)"
+
                   Write-Host "Creating git tag: '$gitTagVersion'"
 
                   $existingTag = git tag -l $gitTagVersion
@@ -75,14 +79,10 @@ stages:
                   
                   Write-Host "Pushing bicep module '$gitTagVersion' to ACR"
 
-                  $versionFile = Get-Content -Raw -Path $versionFilePath.FullName | ConvertFrom-Json
-
                   Write-Host "Module: '$($versionFile.module)'"
                   Write-Host "Module version: '$($versionFile.version)'"
 
                   $bicepModule = $versionFilePath.FullName.Replace("version.json", "main.bicep")
                   
                   az bicep publish --file $bicepModule --target "br:$acrId/bicep/modules/$($versionFile.module):v$($versionFile.version)"
-
-                  $gitTagVersion = "$(versionFile.module)-v$($versionFile.version)"
                 }
