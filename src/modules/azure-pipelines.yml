@@ -21,11 +21,12 @@ stages:
 
           - powershell: |
               Write-Host "Validate version file"
-              $lastTag = git describe --tags --abbrev=0  
+              
+              $lastTag = git tag --sort=-committerdate -l | Select -First 1
 
               Write-Host "Last tag: $lastTag"
 
-              # (git diff --name-only $lastTag $(Build.SourceBranch))
+              (git diff --name-only $lastTag $(Build.SourceBranch))
               # $versionFile = (git diff --name-only $lastTag $(Build.SourceBranch)) -match "/version.json"          
 
               # if($versionFile.Count -gt 1){ 
