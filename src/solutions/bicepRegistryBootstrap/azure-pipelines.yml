@@ -50,9 +50,14 @@ stages:
                 $acrDeploy = az deployment group create `
                     -f "./src/solutions/bicepRegistryBootstrap/azureContainerRegistry/main.bicep" `
                     -g $resourceGroup.Properties.Outputs.resourceGroupName.value `
-                    --parameters workloadAffix=$WorkloadAffix applicationSufix=$ApplicationSufix instanceNumber=001
+                    --parameters workloadAffix=$WorkloadAffix applicationSufix=$ApplicationSufix instanceNumber=001 `
+                    | ConvertFrom-Json -Depth 10
+                
+                Write-Host $acrDeploy
                 
                 $acrId = $acrDeploy.properties.outputs.acrId.value
+                
+                Write-Host $acrId
                 
                 Write-Host "##vso[task.setvariable variable=acrId]$acrId"
 
