@@ -16,9 +16,38 @@ stages:
         displayName: Bootstrap Bicep Registry
         steps:
           - task: AzureCLI@2
+            enabled: false
             inputs:
               azureSubscription: 'ServicePrincipal'
               scriptType: 'pscore'
               scriptLocation: 'scriptPath'
               scriptPath: '$(Build.SourcesDirectory)/src/solutions/bicepRegistryBootstrap/bicepRegistryBootstrap.ps1'
               arguments: '-WorkingDirectory $(Build.SourcesDirectory)'
+
+          - task: AzureCLI@2
+            displayName: Deploy Azure Container Registry
+            enabled: true
+            inputs:
+              azureSubscription: "ServicePrincipal"
+              scriptType: "pscore"
+              scriptLocation: "inlineScript"
+              workingDirectory: $(Build.SourcesDirectory)
+              inlineScript: |
+                $WorkloadAffix = "br"
+                $ApplicationSufix = "bcp"
+                $Location = "westeurope"
+
+                Write-Host "Creating resource group..."
+
+                $resourceGroup = az deployment sub create `
+                    -f "$WorkingDirectory/src/solutions/bicepRegistryBootstrap/resourceGroup/main.bicep" `
+                    -l $Location `
+                    --parameters workloadAffix=$WorkloadAffix applicationSufix=$ApplicationSufix `
+                    -o json | ConvertFrom-Json
+                
+                Write-Host "Creating container registry..."
+                
+                az deployment group create `
+                    -f "$WorkingDirectory/src/solutions/bicepRegistryBootstrap/azureContainerRegistry/main.bicep" `
+                    -g $resourceGroup.Properties.Outputs.resourceGroupName.value `
+                    --parameters workloadAffix=$WorkloadAffix applicationSufix=$ApplicationSufix instanceNumber=001
