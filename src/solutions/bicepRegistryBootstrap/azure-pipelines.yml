@@ -85,7 +85,7 @@ stages:
               scriptLocation: "inlineScript"
               workingDirectory: $(Build.SourcesDirectory)
               inlineScript: |
-                Write-Host "Loading existing modules..."
+                Write-Host "Pushing existing modules to ACR '$(acrId)'..."
                                 
                 $coreModules = "$(Build.SourcesDirectory)/src/modules"
 
