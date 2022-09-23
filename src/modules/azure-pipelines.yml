@@ -1,0 +1,89 @@
+trigger:
+  branches:
+    include:
+      - feature/*
+  paths:
+    include:
+      - src/modules/*
+
+pool:
+  vmImage: windows-latest
+
+stages:
+  - stage: dev
+    jobs:
+      - job: BicepModulesDeploy
+        displayName: Bicep Modules Deploy
+        steps:
+          - checkout: self
+            persistCredentials: true
+            fetchDepth: 0
+
+          - powershell: |
+              Write-Host "Validate version file"
+              $lastTag = git describe --tags --abbrev=0  
+
+              (git diff --name-only $lastTag $(Build.SourceBranch))
+              $versionFile = (git diff --name-only $lastTag $(Build.SourceBranch)) -match "/version.json"          
+
+              if($versionFile.Count -gt 1){ 
+                Write-Error "More than one version file updated"
+              }elseif($null -eq $versionFile -or $versionFile.Count -eq 0 -or $versionFile -eq $false){
+                Write-Error "No version files were updated"
+              }
+
+              # $versionFile = Get-Content -Raw -Path $versionFile | ConvertFrom-Json
+
+              # Write-Host "Module changed: '$($versionFile.module)'"
+              # Write-Host "Module version: '$($versionFile.version)'"
+
+              # Write-Output "bicepModuleVersion=$($versionFile.version)" >> $env:GITHUB_ENV
+              # Write-Output "bicepModuleName=$($versionFile.module)" >> $env:GITHUB_ENV
+            workingDirectory: $(Build.SourcesDirectory)
+            enabled: false
+
+          - task: AzureCLI@2
+            displayName: Deploy bicep modules
+            enabled: true
+            inputs:
+              azureSubscription: "ServicePrincipal"
+              scriptType: "pscore"
+              scriptLocation: "inlineScript"
+              workingDirectory: $(Build.SourcesDirectory)
+              inlineScript: |
+                Write-Host "Loading existing modules..."
+                               
+                $acrId = "brmodexpcr001.azurecr.io"
+
+                $coreModules = "$(Build.SourcesDirectory)/src/modules"
+
+                $versionFiles = Get-ChildItem $coreModules -Recurse -Filter "version.json" | Select-Object FullName 
+
+                foreach ($versionFilePath in $versionFiles) {
+                  Write-Host "Processing $($versionFilePath.FullName)"  
+                
+                  $versionFile = Get-Content -Raw -Path $versionFilePath.FullName | ConvertFrom-Json
+
+                  $gitTagVersion = "$($versionFile.module)-v$($versionFile.version)"
+
+                  Write-Host "Creating git tag: '$gitTagVersion'"
+
+                  $existingTag = git tag -l $gitTagVersion
+
+                  if($existingTag){
+                    Write-Host "##[warning]Version '$gitTagVersion' already exist"
+                  }else{
+                    Write-Host "Generating tag '$gitTagVersion'"
+                    git tag $gitTagVersion
+                    git push --tags     
+                  }
+                  
+                  Write-Host "Pushing bicep module '$gitTagVersion' to ACR"
+
+                  Write-Host "Module: '$($versionFile.module)'"
+                  Write-Host "Module version: '$($versionFile.version)'"
+
+                  $bicepModule = $versionFilePath.FullName.Replace("version.json", "main.bicep")
+                  
+                  az bicep publish --file $bicepModule --target "br:$acrId/bicep/modules/$($versionFile.module):v$($versionFile.version)"
+                }
