@@ -14,13 +14,22 @@ param applicationSufix string = 'app'
 @maxLength(3)
 param instanceNumber string = '001'
 
+@allowed([
+  'exp'
+  'dev'
+  'qua'
+  'uat'
+])
+param environment string = 'exp'
+
 module naming '../../../modules/NamingConvention/namingConventionResources/main.bicep' = {
   name: 'naming'
 
   params: {
     workloadAffix: workloadAffix
-    instanceNumber: instanceNumber
     applicationSufix: applicationSufix
+    environment: environment
+    instanceNumber: instanceNumber
   }
 }
 
