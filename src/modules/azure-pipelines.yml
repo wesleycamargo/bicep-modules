@@ -27,6 +27,8 @@ stages:
               Write-Host "Last tag: $lastTag"
               Write-Host "Branch: $(Build.SourceBranch)"
 
+              git branch
+
               $versionFile = (git diff --name-only $lastTag $(Build.SourceBranch)) -match "/version.json"          
 
               # if($versionFile.Count -gt 1){ 
