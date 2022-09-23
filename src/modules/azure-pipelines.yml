@@ -29,7 +29,9 @@ stages:
 
               git branch -r
 
-              $versionFile = (git diff --name-only $lastTag $(Build.SourceBranch)) -match "/version.json"          
+              # $branch = $(Build.SourceBranch).Replace("refs/heads/", "")
+
+              $versionFile = (git diff --name-only $lastTag $branch) -match "/version.json"          
 
               # if($versionFile.Count -gt 1){ 
               #   Write-Error "More than one version file updated"
